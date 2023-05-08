@@ -1,0 +1,233 @@
+﻿<Window x:Class="MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Math10_Core3._1"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        mc:Ignorable="d"
+    Title="MainWindow" Height="300" Width="460" KeyDown="WindowKeyDown" 
+   WindowStartupLocation="Manual" 
+        ResizeMode="CanResizeWithGrip"
+        FontFamily="Courier New" 
+        FontSize="14"
+        FontStretch="SemiCondensed">
+    <Window.Resources>
+        <RoutedUICommand x:Key="FractionsCmd" Text="Fractions"/>
+        <RoutedUICommand x:Key="OpenHTMLCmd" Text="Open HTML..." />
+        <RoutedUICommand x:Key="SaveCmd" Text="Save..." />
+        <RoutedUICommand x:Key="SaveHTMLCmd" Text="Save as HTML..." />
+        <RoutedUICommand x:Key="RestoreDefaultCmd" Text="Restore default settings" />
+        <RoutedUICommand x:Key="SaveCurrentCmd" Text="Save current settings" />
+        <RoutedUICommand x:Key="CalculateCmd" Text="Calculate" />
+        <RoutedUICommand x:Key="ClearAllCmd" Text="Clear All" />
+        <RoutedUICommand x:Key="EngCmd" Text="Engineering notation" />
+        <RoutedUICommand x:Key="IncrCmd" Text="Increment" />
+        <RoutedUICommand x:Key="DecrCmd" Text="Decrement" />
+        <RoutedUICommand x:Key="DetailCmd" Text="Detail" />
+        <RoutedUICommand x:Key="IgnoreCaseCmd" Text="Ignore case" />
+        <RoutedUICommand x:Key="IgnoreCRCmd" Text="Ignore CR" />
+        <RoutedUICommand x:Key="RoundingCmd" Text="Rounding" />
+        <RoutedUICommand x:Key="ImgCmd" Text="Imaginary" />
+        <RoutedUICommand x:Key="VarLenCmd" Text="Var.length" />
+        <RoutedUICommand x:Key="AllowNumCmd" Text="Allow num. in var." />
+        <RoutedUICommand x:Key="UnitsCmd" Text="Units" />
+        <RoutedUICommand x:Key="HelpCmd" Text="Help" />
+        <RoutedUICommand x:Key="AboutCmd" Text="About" />
+        <RoutedUICommand x:Key="NotesCmd" Text="Notes" />
+        <RoutedUICommand x:Key="StoryCmd" Text="About" />
+    </Window.Resources>
+    <Window.CommandBindings >
+        <CommandBinding Command="{StaticResource OpenHTMLCmd}" Executed="OpenHTML_Executed" />
+        <CommandBinding Command="{StaticResource SaveHTMLCmd}" Executed="SaveHTML_Executed" />
+        <CommandBinding Command="{StaticResource RestoreDefaultCmd}" Executed="RestoreDefault_Executed" />
+        <CommandBinding Command="{StaticResource SaveCurrentCmd}" Executed="SaveCurrent_Executed" />
+        <CommandBinding Command="{StaticResource CalculateCmd}" Executed="CalculateA" />
+        <CommandBinding Command="{StaticResource ClearAllCmd}" Executed="ClearAll_Executed" />
+        <CommandBinding Command="{StaticResource EngCmd}" Executed="Eng" />
+        <CommandBinding Command="{StaticResource IncrCmd}" Executed="Incr" />
+        <CommandBinding Command="{StaticResource DecrCmd}" Executed="Decr" />
+        <CommandBinding Command="{StaticResource DetailCmd}" Executed="Decr" />
+        <CommandBinding Command="{StaticResource ImgCmd}" Executed="Img_Executed" />
+        <CommandBinding Command="{StaticResource HelpCmd}" Executed="Help" />
+        <CommandBinding Command="{StaticResource AboutCmd}" Executed="About" />
+        <CommandBinding Command="{StaticResource NotesCmd}" Executed="Notes" />
+        <CommandBinding Command="{StaticResource StoryCmd}" Executed="Record_edit" />
+    </Window.CommandBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="28" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" >
+            <DockPanel>
+                <Menu DockPanel.Dock="Top" Margin="0,0,0,0">
+                    <MenuItem Header="_File..." >
+                        <MenuItem Header="Open HTML..." Command="{StaticResource OpenHTMLCmd}" />
+                        <MenuItem Header="Save as HTML..." Command="{StaticResource SaveHTMLCmd}"/>
+                        <Separator />
+                        <MenuItem Header="Restore default settings" Command="{StaticResource RestoreDefaultCmd}" />
+                        <MenuItem Header="Save current settings" Command="{StaticResource SaveCurrentCmd}" />
+                    </MenuItem>
+                    <MenuItem Header="Clear _All" x:Name="mnClear" Command="{StaticResource ClearAllCmd}"/>
+                    <MenuItem Header="_CALCULATE " Command="{StaticResource CalculateCmd}"/>
+                    <MenuItem Header="_Predefined...">
+                        <ComboBox x:Name="Fns" IsEditable="False" IsReadOnly="True" />
+                        <ComboBox x:Name="Examples" PreviewKeyDown="Examples_PreviewKeyDown">
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ComboBoxItem}">
+                                    <!-- Setter Property="Width" Value="150"/ -->
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+                        </ComboBox>
+                        <Label Content="Special Chars:"/>
+                        <ComboBox x:Name="SpecialChars" IsEditable="False" IsReadOnly="True" Text="Special Characters" />
+                        <MenuItem Header="_Logical operators:">
+                            <MenuItem Header="And" />
+                            <MenuItem Header="Or" />
+                            <MenuItem Header="Not" />
+                            <MenuItem Header="Xor" />
+                            <MenuItem Header="Nor" />
+                            <MenuItem Header="Nand" />
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="_Options..." Name="Options" >
+                        <!--Label Content="Culture Info:"/>
+                        <ComboBox x:Name="CBCultureInfo" Text="Culture Info" SelectionChanged="CBCultureInfo_SelectionChanged" /-->
+                    </MenuItem>
+                    <MenuItem Header="_Record" Command="{StaticResource StoryCmd}" />
+                    <MenuItem Header="_?...">
+                        <MenuItem Header="Notes" Command="{StaticResource NotesCmd}"/>
+                        <MenuItem Header="About" Command="{StaticResource AboutCmd}"/>
+                    </MenuItem>
+                </Menu>
+            </DockPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="43*"/>
+                <ColumnDefinition Width="6*"/>
+                <ColumnDefinition Width="403*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.7*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row ="0" Grid.ColumnSpan="3">
+                <Border Grid.Row ="0" Margin="3,0,5,0" BorderBrush="SlateBlue" BorderThickness="1,1,1,1" Background="AliceBlue" Padding="3" CornerRadius="5" Grid.ColumnSpan="3">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <RichTextBox x:Name="rtbQuery" ToolTipOpening="rtbQueryToolTip" Margin="-3,-3,-5,-3"
+                                   PreviewKeyDown="WindowKeyDown">
+                            <RichTextBox.Resources>
+                                <Style TargetType="{x:Type Paragraph}">
+                                    <Setter Property="Margin" Value="0"/>
+                                </Style>
+                            </RichTextBox.Resources>
+                            <RichTextBox.ToolTip>
+                                <ToolTip x:Name="rtbTooltip1">
+                                    <TextBlock x:Name="Tooltip1"/>
+                                </ToolTip>
+                            </RichTextBox.ToolTip>
+                            <RichTextBox.RenderTransform>
+                                <ScaleTransform  ScaleX="1" ScaleY="1"/>
+                            </RichTextBox.RenderTransform>
+                            <RichTextBox.ContextMenu>
+                                <ContextMenu Name="mnContext">
+                                    <MenuItem Header="Clear" Click="ClearQuery" />
+                                    <MenuItem Header="Copy" Click="CopyQuery" />
+                                    <MenuItem Header="Paste" Click="PasteQuery" />
+                                    <MenuItem Header="Paste Only Text" Click="PasteText" />
+                                    <MenuItem Header="Clear all &amp; Paste" Click="ClearAndPasteQuery" />
+                                    <Separator />
+                                    <MenuItem Header="GoTo Previous" Click="gotoPrevious" />
+                                    <MenuItem Header="GoTo Next" Click="gotoNext" />
+                                    <MenuItem Header="Goto" MouseEnter="populateLBQuery">
+                                        <ListBox x:Name="lbGoTo" />
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="Font" Click="Font" />
+                                    <MenuItem Header="Color" Click="Color" />
+                                </ContextMenu>
+                            </RichTextBox.ContextMenu>
+                        </RichTextBox>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+            <GridSplitter Grid.Row="1" Panel.ZIndex="1" Background="#f0f0f0"  HorizontalAlignment="Stretch"  VerticalAlignment="Center" Height="5" Grid.ColumnSpan="3" />
+            <Border Grid.Row ="2" Margin="3,0,5,0" BorderBrush="SlateBlue" BorderThickness="1,1,1,1" Background="AliceBlue" Padding="3" CornerRadius="5" Grid.ColumnSpan="3">
+                <wv2:WebView2 Name="webbrowser1"></wv2:WebView2>
+
+            </Border>
+
+
+
+
+        </Grid>
+        <DockPanel Grid.Row="2" >
+            <StackPanel>
+                <Rectangle Fill="#f0f0f0" Height="1" />
+                <Rectangle Fill="#99B4D1" Height="4" Margin="0,1,0,0" />
+                <StatusBar DockPanel.Dock="Bottom" Background="#f0f0f0">
+                    <StatusBar.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="3" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="3" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="3" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="3" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                        </ItemsPanelTemplate>
+                    </StatusBar.ItemsPanel>
+                    <StatusBarItem Grid.Column="0">
+                        <TextBlock />
+                    </StatusBarItem>
+                    <StatusBarItem Grid.Column="1" HorizontalAlignment="Center">
+                        <TextBlock x:Name="lblLt" PreviewMouseDown="StBar"><Run Text="&lt;"/></TextBlock>
+                    </StatusBarItem>
+                    <Separator Grid.Column="2" />
+                    <StatusBarItem Grid.Column="3" HorizontalAlignment="Center">
+                        <TextBlock x:Name="lblGt" PreviewMouseDown="StBar"><Run Text="&gt;"/></TextBlock>
+                    </StatusBarItem>
+                    <Separator Grid.Column="4" />
+                    <StatusBarItem Grid.Column="5" HorizontalAlignment="Center">
+                        <TextBlock x:Name="lblClear" PreviewMouseDown="StBar"><Run Text="Clear"/></TextBlock>
+                    </StatusBarItem>
+                    <Separator Grid.Column="6" />
+                    <StatusBarItem Grid.Column="7" x:Name="stBarImg" HorizontalAlignment="Center">
+                        <StatusBarItem.InputBindings >
+                            <KeyBinding Command="{Binding stBar}" 
+                                        CommandParameter="{Binding Text, ElementName=lblImg}" />
+                        </StatusBarItem.InputBindings>
+                        <TextBlock x:Name="lblImg"><Run Text="i"/></TextBlock>
+                    </StatusBarItem>
+                    <Separator Grid.Column="8" />
+                    <StatusBarItem Grid.Column="9" HorizontalAlignment="Center">
+                        <StatusBarItem.InputBindings >
+                            <!-- KeyBinding Command="{Binding stBar}" 
+                                        CommandParameter="{Binding Text, ElementName=lblPje}" / -->
+                        </StatusBarItem.InputBindings>
+                    </StatusBarItem>
+                    <StatusBarItem Grid.Column="10" HorizontalContentAlignment="Center">
+                        <TextBlock x:Name="tbMsg"></TextBlock>
+                    </StatusBarItem>
+                    <StatusBarItem Grid.Column="11" HorizontalContentAlignment="Right">
+                        <ProgressBar x:Name="progBar" Height="18" Width="50" Margin="0,0,10,0" HorizontalAlignment="Right"></ProgressBar>
+                    </StatusBarItem>
+                </StatusBar>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
